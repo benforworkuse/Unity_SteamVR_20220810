@@ -13,6 +13,9 @@ namespace Valve.VR.InteractionSystem
 	//-------------------------------------------------------------------------
 	public class Teleport : MonoBehaviour
     {
+		[SerializeField, Header("是否顯示教學")] private bool showSteamVRHint;
+		private GameObject goBasketballCenter;
+        #region Steam VR 資料 
         public SteamVR_Action_Boolean teleportAction = SteamVR_Input.GetAction<SteamVR_Action_Boolean>("Teleport");
 
         public LayerMask traceLayerMask;
@@ -37,8 +40,8 @@ namespace Valve.VR.InteractionSystem
 		public float meshFadeTime = 0.2f;
 
 		public float arcDistance = 10.0f;
-
-		[Header( "Effects" )]
+        
+        [Header( "Effects" )]
 		public Transform onActivateObjectTransform;
 		public Transform onDeactivateObjectTransform;
 		public float activateObjectTime = 1.0f;
@@ -109,6 +112,7 @@ namespace Valve.VR.InteractionSystem
 
 		private Vector3 startingFeetOffset = Vector3.zero;
 		private bool movedFeetFarEnough = false;
+		#endregion
 
 		SteamVR_Events.Action chaperoneInfoInitializedAction;
 
@@ -188,7 +192,9 @@ namespace Valve.VR.InteractionSystem
 
 			CheckForSpawnPoint();
 
-			Invoke( "ShowTeleportHint", 5.0f );
+			if(showSteamVRHint) Invoke( "ShowTeleportHint", 5.0f );
+
+			goBasketballCenter = GameObject.Find("籃球框中心");
 		}
 
 
@@ -867,6 +873,8 @@ namespace Valve.VR.InteractionSystem
 
 			if ( teleportPoint != null )
 			{
+				print("兩分");
+				GameObject.Find("籃球框中心").SendMessage("ChangeScore", 4);
 				teleportPosition = teleportPoint.transform.position;
 
 				//Teleport to a new scene
@@ -881,6 +889,8 @@ namespace Valve.VR.InteractionSystem
 			TeleportArea teleportArea = teleportingToMarker as TeleportArea;
 			if ( teleportArea != null )
 			{
+				print("三分");
+				GameObject.Find("籃球框中心").SendMessage("ChangeScore", 3);
 				if ( floorFixupMaximumTraceDistance > 0.0f )
 				{
 					RaycastHit raycastHit;
